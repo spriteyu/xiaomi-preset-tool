@@ -325,28 +325,12 @@ const OFFICIAL = [
   ['质感静物',25,10,-8,20,25],
   ['大师水墨',12,-32,-23,-33,0]
 ];
-const QR = [
-  ['清月',10,-5,0,5,0,'正片'],
-  ['翰墨',-10,10,5,8,-6,'远山青'],
-  ['赤霞',-25,5,15,10,7,'赤霞红'],
-  ['流年',-50,0,0,12,10,'徕卡漂棕'],
-  ['丝竹',-18,2,-10,-5,5,'徕卡自然'],
-  ['韶华',-10,5,-8,-5,10,'负片'],
-  ['竹径',3,8,-8,6,20,'正片']
-];
-
 (function fillLib(){
   const box = document.getElementById('lib');
   for (const [name,t,ct,cn,vb,tx] of OFFICIAL){
     const b = document.createElement('button');
     b.innerHTML = name + '<span class="tag">官方</span>';
     b.onclick = () => apply(name,t,ct,cn,vb,tx,'');
-    box.appendChild(b);
-  }
-  for (const [name,t,ct,cn,vb,tx,f] of QR){
-    const b = document.createElement('button');
-    b.innerHTML = name + '<span class="tag">扫码</span>';
-    b.onclick = () => apply(name,t,ct,cn,vb,tx,f);
     box.appendChild(b);
   }
 })();
