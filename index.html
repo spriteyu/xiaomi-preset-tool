@@ -330,26 +330,39 @@ const OFFICIAL = [
   for (const [name,t,ct,cn,vb,tx] of OFFICIAL){
     const b = document.createElement('button');
     b.innerHTML = name + '<span class="tag">官方</span>';
-    b.onclick = () => apply(name,t,ct,cn,vb,tx,'');
+    b.onclick = () => apply(name,t,ct,cn,vb,tx);
     box.appendChild(b);
   }
 })();
 
 const FIELDS = ['tone','ct','ctone','vib','tex'];
 
-function apply(name,t,ct,cn,vb,tx,filter){
+/* 高级区（曝光与镜头）。配方不带这些值时一律复位成默认，否则上一个配方
+   残留的 EV、白平衡、快门会污染当前这组——那样配方就不完整了。
+   官方 16 组的真实数据全部是 EV 0 / 白平衡自动 / ISO 自动 / 快门自动，
+   所以它们点下去看到的就是这套默认值。 */
+const ADV_FIELDS = ['ev','wb','iso','shutter','lens','zoom'];
+const ADV_DEFAULT = { ev:'0', wb:'1', iso:'0', shutter:'0', lens:'wide', zoom:'1.0' };
+
+function setAdv(adv){
+  const a = Object.assign({}, ADV_DEFAULT, adv || {});
+  for (const k of ADV_FIELDS){
+    const el = document.getElementById(k);
+    if (el) el.value = a[k];
+  }
+}
+
+function apply(name,t,ct,cn,vb,tx,adv){
   document.getElementById('name').value = name;
   FIELDS.forEach((id,i) => {
     const el = document.getElementById(id);
     el.value = [t,ct,cn,vb,tx][i];
     document.getElementById('v-' + id).textContent = el.value;
   });
-  const note = document.getElementById('libnote');
-  note.textContent = filter
-    ? '这组的滤镜是「' + filter + '」，zip 装不进去，导入后需要手动在相机里选一次。其余参数已填入。'
-    : '参数已填入，可直接生成。';
-  if (filter) document.querySelector('details').open = true;
-  show('warn', '已载入「' + name + '」' + (filter ? '，记得导入后手动选滤镜「' + filter + '」' : ''));
+  setAdv(adv);
+  document.getElementById('libnote').textContent =
+    '五项风格已填入；高级区的曝光补偿、白平衡、ISO、快门、镜头、变焦也已复位为这组的默认值。';
+  show('ok', '已载入「' + name + '」');
 }
 
 /* ============ 交互 ============ */
